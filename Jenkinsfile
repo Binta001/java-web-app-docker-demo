@@ -1,5 +1,3 @@
-/var/lib/jenkins/jobs/demopipeline/builds
-
 pipeline{
     agent any
     environment {
