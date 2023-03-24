@@ -33,7 +33,7 @@ pipeline{
                sh "docker build -t fabinta/javarepo:${BUILD_NUMBER} ."
             }
         }
-        stage("Docker"){
+        stage("Docker push"){
             steps{
             sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             sh "docker push fabinta/javarepo:${BUILD_NUMBER}"
