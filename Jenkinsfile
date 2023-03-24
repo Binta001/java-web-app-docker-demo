@@ -22,7 +22,7 @@ pipeline{
 					}
 			}
        }
-       stage('Upload artifact to Nexus') {
+       stage('Upload artifact to  Nexus') {
             steps{
                 nexusArtifactUploader artifacts: [[artifactId: 'java-web-app', classifier: '', file: 'target/java-web-app-5.0.war', type: 'war']], credentialsId: 'nexus-cred', groupId: 'com.mt', nexusUrl: '18.205.119.158:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'nexus-hosted-repo', version: '5.0'
                 }
