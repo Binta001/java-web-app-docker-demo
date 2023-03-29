@@ -1,44 +1,52 @@
-pipeline{
+pipeline {
     agent any
+    
     environment {
         PATH = "$PATH:/usr/share/maven/bin"
-        DOCKERHUB_CREDENTIALS = credentials('dockerhubcred')
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
     }
-    stages{
-        stage("cloning repo"){
-            steps{
-              git 'https://github.com/Binta001/java-web-app-docker-demo.git'
+
+    stages {
+        stage('cloning repo') {
+            steps {
+                git 'https://github.com/Binta001/java-web-app-docker-demo.git'
             }
         }
+        
         stage("building code"){
              steps{
                 sh 'mvn clean install'
              }
         }
+        
        stage('SonarQube analysis') {
             steps{
-                  withSonarQubeEnv('sonarserver') { 
+                  withSonarQubeEnv('sonar_server') { 
                   sh "mvn sonar:sonar"
 					}
 			}
        }
+       
        stage('Upload artifact to Nexus') {
             steps{
-                nexusArtifactUploader artifacts: [[artifactId: 'java-web-app', classifier: '', file: 'target/java-web-app-5.0.war', type: 'war']], credentialsId: 'nexus-cred', groupId: 'com.mt', nexusUrl: '18.205.119.158:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'nexus-hosted-repo', version: '5.0'
+                nexusArtifactUploader artifacts: [[artifactId: 'java-web-app', classifier: '', file: 'target/java-web-app-5.0.war', type: 'war']], credentialsId: 'nexus-cred', groupId: 'com.mt', nexusUrl: '3.95.90.55:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'nexus-hosted-repo', version: '5.0'
                 }
                
         }
-       stage("Build Docker Image") {
+        
+        stage("Build Docker Image")  {
             steps{
-               sh "docker build -t fabinta/javarepo:${BUILD_NUMBER} ."
+               sh "docker build -t fabinta/myjenkins_project:${BUILD_NUMBER} ."
             }
         }
         stage("Docker push"){
             steps{
             sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            sh "docker push fabinta/javarepo:${BUILD_NUMBER}"
+            sh "docker push fabinta/myjenkins_project:${BUILD_NUMBER}"
             }
         }
-        
     }
+    
+        
+    
 }
