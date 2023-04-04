@@ -45,8 +45,24 @@ pipeline {
             sh "docker push fabinta/myjenkins_project:${BUILD_NUMBER}"
             }
         }
-    }
+       stage("dowmloadkey")  {
+            steps{
+               sh 'aws s3 cp s3://cf-templates-1gv4da4p4r1b7-us-east-1/NVkeypair.pem'
+            }
+        }
+        stage('create stack') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "myaws_cred",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                 sh 'aws ec2 run-instances --image-id 00c39f71452c08778 --instance-type $t2.medium --key-name NVkeypair --region us-east-1'
+                }
+            }
+        }
+		
+     }
     
-        
-    
-}
+ }
