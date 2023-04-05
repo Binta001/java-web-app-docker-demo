@@ -47,7 +47,7 @@ pipeline {
         }
 		stage("dowmloadkey")  {
             steps{
-               sh 'aws s3 cp s3://cf-templates-1gv4da4p4r1b7-us-east-1/NVkeypair.pem'
+               sh 'aws s3 cp s3://cf-templates-1gv4da4p4r1b7-us-east-1/NVkeypair.pem' .
             }
         }
 		  stage('create stack') {
