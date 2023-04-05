@@ -58,7 +58,7 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
-                 sh 'aws ec2 run-instances demo --imageid 00c39f71452c08778 --instance-type $t2.medium --key-name NVkeypair --region us-east-1'
+                 sh 'aws ec2 run-instances --imageid 00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --region us-east-1'
                 }
             }
         }
