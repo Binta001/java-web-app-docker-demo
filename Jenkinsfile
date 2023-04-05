@@ -67,7 +67,7 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                  sh 'aws ec2 run-instances --image-id ami-00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --tag-specifications \'ResourceType=instance,Tags=[{Key=Name,Value=Demoec2}]\' --region us-east-1'
-                 sh 'aws ec2 describe-instances --filters \'Name=tag:Name,Values=Demoec2\' --output text --query \'Reservations[*].Instances[*].InstanceId\''
+                 sh 'aws ec2 describe-instances --filters \'Name=tag:Name,Values=Demoec2\' --output text --query \'Reservations[*].Instances[*].InstanceId\' --region us-east-1'
 		
 		}
             }
