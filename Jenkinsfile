@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-	 stage('create stack') {
+	 stage('create ec2') {
              steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
@@ -67,10 +67,27 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                  sh 'aws ec2 run-instances --image-id ami-00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --tag-specifications \'ResourceType=instance,Tags=[{Key=Name,Value=Demoec2}]\' --region us-east-1'
-                 //myinstanceid = sh 'aws ec2 describe-instances --filters \'Name=tag:Name,Values=Demoec2\' --output text --query \'Reservations[*].Instances[*].InstanceId\' --region us-east-1'
-			script {
+                script {
 		def myinstanceid = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Name,Values=Demoec2' --output text --query 'Reservations[*].Instances[*].InstanceId' --region us-east-1", returnStdout: true).trim() 
 				println "instance id of the instance is ${myinstanceid}"
+				env.INSTANCE_ID = myinstanceid
+			}
+		
+		}
+            }
+        }
+	stage('Get IP') {
+             steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "myaws_cred",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                script {
+		def myIP = sh(script: "aws ec2 describe-instances --instance-ids ${INSTANCE_ID} --query 'Reservations[].Instances[].PublicIpAddress' --output text--region us-east-1", returnStdout: true).trim() 
+				println "IP of the instance is ${myIP}"
+				env.IP = myIP
 			}
 		
 		}
