@@ -97,7 +97,7 @@ pipeline {
 	  stage("ssh to ec2") {
                 steps {
                     script {
-                    ssh -o StrictHostKeyChecking=no -i NVkeypair.pem ec2-user@3.95.90.55 "docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}"
+			    sh "ssh -o StrictHostKeyChecking=no -i NVkeypair.pem ec2-user@${env.IP} 'docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}'"
                     }
                 }
         }
