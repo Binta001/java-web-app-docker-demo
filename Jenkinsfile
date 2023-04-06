@@ -68,8 +68,11 @@ pipeline {
                 ]]) {
                  sh 'aws ec2 run-instances --image-id ami-00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --tag-specifications \'ResourceType=instance,Tags=[{Key=Name,Value=Demoec2}]\' --region us-east-1'
                  //myinstanceid = sh 'aws ec2 describe-instances --filters \'Name=tag:Name,Values=Demoec2\' --output text --query \'Reservations[*].Instances[*].InstanceId\' --region us-east-1'
-			myinstanceid = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Name,Values=Demoec2' --output text --query 'Reservations[*].Instances[*].InstanceId' --region us-east-1", returnStdout: true).trim() 
-		sh 'echo $myinstanceid'
+			script {
+		def myinstanceid = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Name,Values=Demoec2' --output text --query 'Reservations[*].Instances[*].InstanceId' --region us-east-1", returnStdout: true).trim() 
+				println "instance id of the instance is ${myinstanceid}"
+			}
+		
 		}
             }
         }
