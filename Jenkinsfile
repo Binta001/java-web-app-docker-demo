@@ -85,7 +85,7 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                 script {
-		def myIP = sh(script: "aws ec2 describe-instances --instance-ids ${INSTANCE_ID} --query 'Reservations[].Instances[].PublicIpAddress' --output text--region us-east-1", returnStdout: true).trim() 
+		def myIP = sh(script: "aws ec2 describe-instances --instance-ids ${INSTANCE_ID} --query 'Reservations[].Instances[].PublicIpAddress' --output text --region us-east-1", returnStdout: true).trim() 
 				println "IP of the instance is ${myIP}"
 				env.IP = myIP
 			}
