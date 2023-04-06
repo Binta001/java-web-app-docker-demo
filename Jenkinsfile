@@ -66,7 +66,7 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
-                 sh 'aws ec2 run-instances --image-id ami-00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --tag-specifications \'ResourceType=instance,Tags=[{Key=Name,Value=Demoec2}]\' --region us-east-1'
+                 sh 'aws ec2 run-instances --image-id ami-00c39f71452c08778 --instance-type t2.medium --key-name NVkeypair --tag-specifications \'ResourceType=instance,Tags=[{Key=Name,Value=Demoec2}]\' --user-data "#!/bin/bash sudo yum update -y && sudo amazon-linux-extras install docker -y && sudo service docker start && sudo usermod -a -G docker ec2-user" --region us-east-1'
                 script {
 		def myinstanceid = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Name,Values=Demoec2' --output text --query 'Reservations[*].Instances[*].InstanceId' --region us-east-1", returnStdout: true).trim() 
 				println "instance id of the instance is ${myinstanceid}"
@@ -92,6 +92,14 @@ pipeline {
 		
 		}
             }
+        }
+	    
+	  stage("ssh to ec2") {
+                steps {
+                    script {
+                    ssh -i NVkeypair.pem ec2-user@${IP} "docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}"
+                    }
+                }
         }
 		
 		
