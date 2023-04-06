@@ -97,7 +97,7 @@ pipeline {
 	  stage("ssh to ec2") {
                 steps {
                     script {
-                    ssh -i NVkeypair.pem ec2-user@${IP} "docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}"
+                    ssh -i NVkeypair.pem ec2-user@${env.IP} "docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}"
                     }
                 }
         }
