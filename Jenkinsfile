@@ -97,7 +97,7 @@ pipeline {
 	  stage("ssh to ec2") {
                 steps {
                     script {
-			    sh "chmod 400 NVkeypair.pem && ssh -o StrictHostKeyChecking=no -i NVkeypair.pem ec2-user@${env.IP} 'sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo usermod -a -G docker ec2-user && docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}'"
+			    sh "chmod 400 NVkeypair.pem && ssh -o StrictHostKeyChecking=no -i NVkeypair.pem ec2-user@${env.IP} 'sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo usermod -a -G docker ec2-user && sudo chmod 755 /var/run/docker.sock && docker pull fabinta/myjenkins_project:${BUILD_NUMBER} && docker run -td --name mydemocontainer fabinta/myjenkins_project:${BUILD_NUMBER}'"
                     }
                 }
         }
